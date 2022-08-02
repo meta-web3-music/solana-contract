@@ -1,4 +1,4 @@
 image:
   file: .gitpod/Dockerfile
 tasks:
-  - init: anchor build && yarn
+  - init: cargo-build-bpf && yarn
