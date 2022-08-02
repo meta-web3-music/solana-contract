@@ -2,3 +2,4 @@ image:
   file: .gitpod/Dockerfile
 tasks:
   - init: cargo-build-bpf && yarn
+    command: solana-keygen new --no-bip39-passphrase -s && anchor build
