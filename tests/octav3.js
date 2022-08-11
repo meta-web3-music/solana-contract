@@ -5,7 +5,7 @@ const main = async () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.Myepicproject;
+  const program = anchor.workspace.Octav3;
   // Create an account keypair for our program to use.
   const baseAccount = anchor.web3.Keypair.generate();
 

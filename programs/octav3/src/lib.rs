@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 declare_id!("DPVWSd9QHuwfwipPM3HyPdpxq5zzvLXF1yHnX4aoK3cd");
 
 #[program]
-pub mod myepicproject {
+pub mod octav3 {
     use super::*;
 
     pub fn start_stuff_off(ctx: Context<StartStuffOff>) -> Result<()> {
