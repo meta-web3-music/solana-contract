@@ -1,14 +1,15 @@
 [features]
 seeds = false
 skip-lint = false
-[programs.localnet]
-octav3 = "DPVWSd9QHuwfwipPM3HyPdpxq5zzvLXF1yHnX4aoK3cd"
+[programs.devnet]
+music="FZgfACBNTX6n9a51aszhoYBSD4bgzSRcqdXw9rwnAcQq"
+adv="D6iJsFfF1Bo7Q7CdnWSPELZHeTNoG13MSdQiHbD2WARu"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/home/gitpod/.config/solana/id.json"
 
 [scripts]
