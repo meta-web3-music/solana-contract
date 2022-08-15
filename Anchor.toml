@@ -2,8 +2,8 @@
 seeds = false
 skip-lint = false
 [programs.devnet]
-music="FZgfACBNTX6n9a51aszhoYBSD4bgzSRcqdXw9rwnAcQq"
-adv="D6iJsFfF1Bo7Q7CdnWSPELZHeTNoG13MSdQiHbD2WARu"
+music_nft="FZgfACBNTX6n9a51aszhoYBSD4bgzSRcqdXw9rwnAcQq"
+adv_nft="D6iJsFfF1Bo7Q7CdnWSPELZHeTNoG13MSdQiHbD2WARu"
 
 [registry]
 url = "https://api.apr.dev"
