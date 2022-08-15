@@ -4,9 +4,8 @@ import { MusicNft } from '../target/types/music_nft'
 import { AdvNft } from '../target/types/adv_nft'
 import { TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, createInitializeMintInstruction, MINT_SIZE } from '@solana/spl-token' // IGNORE THESE ERRORS IF ANY
 const { SystemProgram } = anchor.web3
-import { Metaplex } from "@metaplex-foundation/js";
 
-describe('metaplex-anchor-nft', () => {
+describe('Music and Adv NFT', () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   const wallet = provider.wallet as Wallet;
@@ -79,7 +78,7 @@ describe('metaplex-anchor-nft', () => {
 
     console.log("NFT Account: ", MusicNftTokenAccount.toBase58());
 
-    const mint_tx = new anchor.web3.Transaction().add(
+    const mint_music_tx = new anchor.web3.Transaction().add(
       anchor.web3.SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
         newAccountPubkey: musicMintKey.publicKey,
@@ -87,21 +86,8 @@ describe('metaplex-anchor-nft', () => {
         programId: TOKEN_PROGRAM_ID,
         lamports: musicLamPorts,
       }),
-      anchor.web3.SystemProgram.createAccount({
-        fromPubkey: wallet.publicKey,
-        newAccountPubkey: advMintKey.publicKey,
-        space: MINT_SIZE,
-        programId: TOKEN_PROGRAM_ID,
-        lamports: advLamPorts,
-      }),
       createInitializeMintInstruction(
         musicMintKey.publicKey,
-        0,
-        wallet.publicKey,
-        wallet.publicKey
-      ),
-      createInitializeMintInstruction(
-        advMintKey.publicKey,
         0,
         wallet.publicKey,
         wallet.publicKey
@@ -112,6 +98,21 @@ describe('metaplex-anchor-nft', () => {
         wallet.publicKey,
         musicMintKey.publicKey
       ),
+    )
+    const mint_adv_tx = new anchor.web3.Transaction().add(
+      anchor.web3.SystemProgram.createAccount({
+        fromPubkey: wallet.publicKey,
+        newAccountPubkey: advMintKey.publicKey,
+        space: MINT_SIZE,
+        programId: TOKEN_PROGRAM_ID,
+        lamports: advLamPorts,
+      }),
+      createInitializeMintInstruction(
+        advMintKey.publicKey,
+        0,
+        wallet.publicKey,
+        wallet.publicKey
+      ),
       createAssociatedTokenAccountInstruction(
         wallet.publicKey,
         AdvNftTokenAccount,
@@ -119,12 +120,18 @@ describe('metaplex-anchor-nft', () => {
         advMintKey.publicKey
       )
     )
-    const res = await musicProgram.provider.sendAndConfirm(mint_tx, [musicMintKey]);
+    const musicRes = await musicProgram.provider.sendAndConfirm(mint_music_tx, [musicMintKey]);
     console.log(
       await musicProgram.provider.connection.getParsedAccountInfo(musicMintKey.publicKey)
     );
 
-    console.log("Account: ", res);
+    const advRes = await advProgram.provider.sendAndConfirm(mint_adv_tx, [advMintKey]);
+    console.log(
+      await advProgram.provider.connection.getParsedAccountInfo(advMintKey.publicKey)
+    );
+
+
+    console.log("Account: ", musicRes);
     console.log("Mint key: ", musicMintKey.publicKey.toString());
     console.log("User: ", wallet.publicKey.toString());
 
@@ -152,27 +159,27 @@ describe('metaplex-anchor-nft', () => {
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         masterEdition: musicMasterEdition,
       },
-      ).signers([wallet.payer]).rpc();
+      ).rpc();
 
-    // console.log("Your transaction signature", tx);
+    console.log("Your transaction signature", tx);
 
-    // let rndKp = anchor.web3.Keypair.generate()
-    // tx = await advProgram.methods.mintAdvNft(
-    //   advMintKey.publicKey,
-    //   "https://arweave.net/y5e5DJsiwH0s_ayfMwYk-SnrZtVZzHLQDSTZ5dNRUHA",
-    //   "Adv for Music A1"
-    // ).accounts({
-    //   mintAuthority: rndKp.publicKey,
-    //   mint: advMintKey.publicKey,
-    //   tokenAccount: AdvNftTokenAccount,
-    //   tokenProgram: TOKEN_PROGRAM_ID,
-    //   metadata: advMetadataAddress,
-    //   tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
-    //   payer: wallet.publicKey,
-    //   systemProgram: SystemProgram.programId,
-    //   rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-    //   masterEdition: advMasterEdition,
-    // }).rpc()
+    //TODO add test to check if mint authority is not signer and/or not owner of that metadata account
+    tx = await advProgram.methods.mintAdvNft(
+      advMintKey.publicKey,
+      "https://arweave.net/y5e5DJsiwH0s_ayfMwYk-SnrZtVZzHLQDSTZ5dNRUHA",
+      "Adv for Music A1"
+    ).accounts({
+      mintAuthority: wallet.publicKey,
+      mint: advMintKey.publicKey,
+      tokenAccount: AdvNftTokenAccount,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      metadata: advMetadataAddress,
+      tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+      payer: wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      masterEdition: advMasterEdition,
+    }).rpc()
 
   })
 })
