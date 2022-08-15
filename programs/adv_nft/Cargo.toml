@@ -1,12 +1,12 @@
 [package]
-name = "music"
+name = "adv_nft"
 version = "0.1.0"
 description = "Created with Anchor"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "music"
+name = "adv_nft"
 
 [features]
 no-entrypoint = []
@@ -19,4 +19,3 @@ default = []
 anchor-lang = "0.25.0"
 anchor-spl = "0.25.0"
 mpl-token-metadata = {version = "1.2.7", features = ["no-entrypoint"]}
-adv = {path="../adv",features=["cpi"]}

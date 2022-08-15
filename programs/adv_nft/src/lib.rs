@@ -3,11 +3,13 @@ use anchor_lang::solana_program::program::invoke;
 use anchor_spl::token;
 use anchor_spl::token::{MintTo, Token};
 use mpl_token_metadata::instruction::{create_master_edition_v3, create_metadata_accounts_v2};
-
-declare_id!("D6iJsFfF1Bo7Q7CdnWSPELZHeTNoG13MSdQiHbD2WARu");
+use mpl_token_metadata::state::{Metadata, TokenMetadataAccount};
+use mpl_token_metadata::utils::assert_update_authority_is_correct;
+declare_id!("3yvqsncdr3Ua1kiXEWZ9iwFqRjnAEe3DdDiZvpzabJ9D");
 
 #[program]
 pub mod adv_nft {
+
     use super::*;
 
     pub fn mint_adv_nft(
@@ -16,6 +18,13 @@ pub mod adv_nft {
         uri: String,
         title: String,
     ) -> Result<()> {
+        //TODO: whether to use mint_authority for checking
+        let metadata_account: Metadata =
+            Metadata::from_account_info(&ctx.accounts.music_metadata_account)?;
+        assert_update_authority_is_correct(
+            &metadata_account,
+            &ctx.accounts.mint_authority.to_account_info(),
+        )?;
         msg!("Initializing Mint Ticket");
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),
@@ -111,6 +120,7 @@ pub struct MintNFT<'info> {
     #[account(mut)]
     pub mint_authority: Signer<'info>,
 
+    //TODO: remove reductant
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub mint: UncheckedAccount<'info>,
@@ -133,4 +143,8 @@ pub struct MintNFT<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub master_edition: UncheckedAccount<'info>,
+
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account()]
+    pub music_metadata_account: AccountInfo<'info>,
 }

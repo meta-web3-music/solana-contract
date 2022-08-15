@@ -1,13 +1,9 @@
-// use adv::program::Adv;
-
-use adv::cpi::accounts::MintNFT;
-use adv::program::AdvNft;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program::invoke;
 use anchor_spl::token;
 use anchor_spl::token::{MintTo, Token};
 use mpl_token_metadata::instruction::{create_master_edition_v3, create_metadata_accounts_v2};
-declare_id!("FZgfACBNTX6n9a51aszhoYBSD4bgzSRcqdXw9rwnAcQq");
+declare_id!("5EiC52YiZEUpxh678MVyi36QBj8GFqfuqLGHsxSdGvaN");
 
 #[program]
 pub mod music_nft {
@@ -20,25 +16,6 @@ pub mod music_nft {
         uri: String,
         title: String,
     ) -> Result<()> {
-        let mint_acc = &mut ctx.accounts.mint;
-        mint_acc.adv_account_pub_key = ctx.accounts.mint_adv.key();
-        let cpi_program = ctx.accounts.adv_program.to_account_info();
-        let cpi_ctx = CpiContext::new(
-            cpi_program,
-            MintNFT {
-                master_edition: ctx.accounts.master_edition.to_account_info(),
-                metadata: ctx.accounts.metadata.to_account_info(),
-                mint: ctx.accounts.mint_adv.to_account_info(),
-                token_account: ctx.accounts.token_account.to_account_info(),
-                token_metadata_program: ctx.accounts.token_metadata_program.to_account_info(),
-                mint_authority: ctx.accounts.mint_authority.to_account_info(),
-                payer: ctx.accounts.payer.to_account_info(),
-                rent: ctx.accounts.rent.to_account_info(),
-                system_program: ctx.accounts.system_program.to_account_info(),
-                token_program: ctx.accounts.token_program.to_account_info(),
-            },
-        );
-        adv::cpi::mint_adv_nft(cpi_ctx, creator_key, uri.clone(), title.clone())?;
         msg!("Initializing Mint Ticket");
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),
@@ -131,16 +108,12 @@ pub mod music_nft {
 
 #[derive(Accounts)]
 pub struct MintMusicNFT<'info> {
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
+    pub mint: UncheckedAccount<'info>,
+
     #[account(mut)]
     pub mint_authority: Signer<'info>,
-
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut)]
-    pub mint: Account<'info, Music>,
-
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut)]
-    pub mint_adv: UncheckedAccount<'info>,
     // #[account(mut)]
     pub token_program: Program<'info, Token>,
     /// CHECK: This is not dangerous because we don't read or write from this account
@@ -160,11 +133,4 @@ pub struct MintMusicNFT<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub master_edition: UncheckedAccount<'info>,
-
-    pub adv_program: Program<'info, AdvNft>,
-}
-
-#[account]
-pub struct Music {
-    adv_account_pub_key: Pubkey,
 }

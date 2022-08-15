@@ -4,7 +4,9 @@
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
     "test": "anchor test",
     "build": "anchor build",
-    "deploy": "npm run build && anchor deploy"
+    "deploy": "npm run deploy:music && npm run deploy:adv",
+    "deploy:music": "npm run build && solana program deploy /workspace/solana-contract/target/deploy/music_nft.so",
+    "deploy:adv": "npm run build && solana program deploy /workspace/solana-contract/target/deploy/adv_nft.so"
   },
   "dependencies": {
     "@metaplex-foundation/js": "^0.14.0",

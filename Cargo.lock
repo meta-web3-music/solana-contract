@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "adv"
+name = "adv_nft"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
@@ -823,10 +823,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "music"
+name = "music_nft"
 version = "0.1.0"
 dependencies = [
- "adv",
  "anchor-lang",
  "anchor-spl",
  "mpl-token-metadata",
