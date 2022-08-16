@@ -53,7 +53,7 @@ pub mod adv_nft {
             },
         ];
         msg!("Creator Assigned");
-        let symbol = std::string::ToString::to_string("symb");
+        let symbol = std::string::ToString::to_string("ADV");
         invoke(
             &create_metadata_accounts_v2(
                 ctx.accounts.token_metadata_program.key(),
